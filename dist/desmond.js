@@ -3179,16 +3179,20 @@ registerProcessor('my-worklet', MyAudioWorklet)`], { type: "text/javascript" }))
 
         if (emuIsRunning) {
             if (config.powerSave) {
-                if (timestamp - prevRunFrameTime < (1 / 30)) {
+                if (timestamp - prevRunFrameTime < 32) {
                     return
                 }
             } else {
-                if (timestamp - prevRunFrameTime < (1 / 60)) {
+                if (timestamp - prevRunFrameTime < 16) {
                     return
                 }
             }
             prevRunFrameTime = timestamp;
-            emuRunFrame()
+
+            const frameSkip = config.frameSkip || 1;
+            for (let i = 0; i < frameSkip; i++) {
+                emuRunFrame()
+            }
         }
     }
     emuLoop(performance.now())
