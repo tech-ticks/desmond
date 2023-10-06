@@ -3174,24 +3174,24 @@ registerProcessor('my-worklet', MyAudioWorklet)`], { type: "text/javascript" }))
     }
 
     var prevRunFrameTime = performance.now()
-    function emuLoop() {
+    function emuLoop(timestamp) {
         window.requestAnimationFrame(emuLoop)
 
         if (emuIsRunning) {
             if (config.powerSave) {
-                if (performance.now() - prevRunFrameTime < 32) {
+                if (timestamp - prevRunFrameTime < (1 / 30)) {
                     return
                 }
             } else {
-                if (performance.now() - prevRunFrameTime < 16) {
+                if (timestamp - prevRunFrameTime < (1 / 60)) {
                     return
                 }
             }
-            prevRunFrameTime = performance.now()
+            prevRunFrameTime = timestamp;
             emuRunFrame()
         }
     }
-    emuLoop()
+    emuLoop(performance.now())
 
     var stickTouchID = null
     var tpadTouchID = null
